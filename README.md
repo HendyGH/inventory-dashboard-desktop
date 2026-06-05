@@ -80,7 +80,3 @@ You can also trigger the workflow manually from the **Actions** tab.
 ├── LICENSE
 └── .gitignore
 ```
-
-## How to Upload to GitHub (No Git Required)
-
-See **[UPLOAD_GUIDE.md](UPLOAD_GUIDE.md)** for step-by-step instructions on creating a GitHub repository and uploading via drag-and-drop.
