@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Dashboard</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<!-- Custom Titlebar -->
+<div class="titlebar">
+    <div class="titlebar-left">
+        <div class="titlebar-icon">
+            <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v3c0 .7.4 1.4 1 1.7V20c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V8.7c.6-.3 1-1 1-1.7V4c0-1.1-.9-2-2-2zm-1 18H5V9h14v11zm1-13H4V4h16v3zM9 12h6v2H9v-2z"/></svg>
+        </div>
+        <span class="titlebar-title">Inventory Dashboard — EWM Reconciliation Engine</span>
+    </div>
+    <div class="titlebar-controls">
+        <button class="titlebar-btn" id="btn-min" title="Minimize">
+            <svg viewBox="0 0 16 16"><rect x="3" y="7.5" width="10" height="1"/></svg>
+        </button>
+        <button class="titlebar-btn" id="btn-max" title="Maximize">
+            <svg viewBox="0 0 16 16" id="icon-max"><rect x="3" y="3" width="10" height="10" fill="none" stroke="currentColor" stroke-width="1"/></svg>
+        </button>
+        <button class="titlebar-btn close" id="btn-close" title="Close">
+            <svg viewBox="0 0 16 16"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9" stroke="currentColor" stroke-width="1.2" fill="none"/></svg>
+        </button>
+    </div>
+</div>
+
+<!-- App Content -->
+<div class="app-wrapper">
+    <header>
+        <div>
+            <h2>Inventory Dashboard Generator</h2>
+            <p>EWM Standard Layout Reconciliation Engine</p>
+        </div>
+        <button class="theme-btn" id="theme-toggle">🌓 Dark/Light Mode</button>
+    </header>
+
+    <div class="layout">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <h3>Shift Target Ingestion Matrix</h3>
+            <div id="daysInputsContainer" style="max-height: 60vh; overflow-y: auto;"></div>
+            <button class="expand-btn" style="width:100%; padding:8px;" onclick="addNewDayProfile()">+ Add New Shift Target</button>
+            <button class="btn-execute" onclick="runDataProcessingPipeline()">▶ Run Pipeline Engine</button>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content" style="flex:1; min-width:0;">
+            <div class="attachment-banner">
+                <div class="banner-info">
+                    <h2 id="bannerTitle">Global Reconciliation Overview</h2>
+                    <p id="bannerSub">Processing structured warehouse logs files</p>
+                </div>
+                <div class="banner-metrics">
+                    <div class="banner-stat">
+                        <div class="label">Total Checked Keys</div>
+                        <div class="value" id="bannerTotalKeys">0</div>
+                    </div>
+                    <div class="banner-stat">
+                        <div class="label">Active Discrepancy</div>
+                        <div class="value" style="color:#ff3b30;" id="bannerDiscrepancies">0</div>
+                    </div>
+                    <div class="banner-stat">
+                        <div class="label">Weekly Accuracy</div>
+                        <div class="value" style="color:#34c759;" id="bannerAccuracy">0.0%</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-menu">
+                <button class="tab-btn active" onclick="toggleActiveTab('dashboard')">Overview Dashboard</button>
+                <button class="tab-btn" onclick="toggleActiveTab('details')">Global Discrepancy Logs</button>
+            </div>
+
+            <div class="tabs-row-nav" id="dayTabsContainer"></div>
+
+            <!-- TAB: Overview Dashboard -->
+            <div id="tab-dashboard" class="tab-content active">
+                <!-- EWM BIN ACCURACY -->
+                <div class="dashboard-section">
+                    <div class="section-title" id="titleEwmAcc">MI11 EWM BIN ACCURACY</div>
+                    <div class="grid-container">
+                        <div class="kpi-column">
+                            <div class="kpi-card">
+                                <div class="kpi-title" id="lblEwmDaily">Daily Details</div>
+                                <div class="kpi-row"><span class="kpi-label">Scanned Found</span><div class="kpi-data"><span class="kpi-value" id="ewm-d-scan">0</span><span class="kpi-perc"></span></div></div>
+                                <div class="kpi-row"><span class="kpi-label">OK BIN</span><div class="kpi-data"><span class="kpi-value" id="ewm-d-ok">0</span><span class="kpi-perc" style="color:var(--primary-blue);" id="ewm-d-ok-p">0.00%</span></div></div>
+                                <div class="kpi-row"><span class="kpi-label">Not OK BIN</span><div class="kpi-data"><span class="kpi-value" id="ewm-d-notok">0</span><span class="kpi-perc" style="color:var(--primary-red);" id="ewm-d-notok-p">0.00%</span></div></div>
+                            </div>
+                            <div class="kpi-card">
+                                <div class="kpi-title">Weekly Details</div>
+                                <div class="kpi-row"><span class="kpi-label">Scanned Found</span><div class="kpi-data"><span class="kpi-value" id="ewm-w-scan">0</span><span class="kpi-perc"></span></div></div>
+                                <div class="kpi-row"><span class="kpi-label">OK BIN</span><div class="kpi-data"><span class="kpi-value" id="ewm-w-ok">0</span><span class="kpi-perc" style="color:var(--primary-blue);" id="ewm-w-ok-p">0.00%</span></div></div>
+                                <div class="kpi-row"><span class="kpi-label">Not OK BIN</span><div class="kpi-data"><span class="kpi-value" id="ewm-w-notok">0</span><span class="kpi-perc" style="color:var(--primary-red);" id="ewm-w-notok-p">0.00%</span></div></div>
+                            </div>
+                        </div>
+                        <div class="chart-card">
+                            <div class="chart-title" id="chartEwmTitle">Daily EWM Bin Accuracy</div>
+                            <div class="svg-donut-container">
+                                <svg width="100%" height="100%" viewBox="0 0 100 100">
+                                    <circle cx="50" cy="50" r="42" fill="transparent" stroke="var(--primary-red)" stroke-width="10" opacity="0.3"/>
+                                    <circle id="donutEwmCircle" cx="50" cy="50" r="42" fill="transparent" stroke="var(--primary-blue)" stroke-width="10" stroke-dasharray="263.89" stroke-dashoffset="263.89" transform="rotate(-90 50 50)" style="transition: stroke-dashoffset 0.6s ease;"/>
+                                </svg>
+                                <div class="svg-donut-text" id="donutEwmText">0%</div>
+                            </div>
+                        </div>
+                        <div class="chart-card" style="align-items:stretch;">
+                            <div class="chart-title">Weekly EWM Bin Accuracy Trend vs Volume</div>
+                            <div id="trendEwmContainer" class="svg-trend-wrapper"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SYSTEM VS SCANNED -->
+                <div class="dashboard-section">
+                    <div class="section-title" id="titleSysAcc">MI11 SYSTEM VS SCANNED ACTUAL</div>
+                    <div class="grid-container">
+                        <div class="kpi-column">
+                            <div class="kpi-card">
+                                <div class="kpi-title" id="lblSysDaily">Daily Details</div>
+                                <div class="kpi-row"><span class="kpi-label">Total Batch</span><div class="kpi-data"><span class="kpi-value" id="sys-d-batch">0</span><span class="kpi-perc"></span></div></div>
+                                <div class="kpi-row"><span class="kpi-label">Scanned</span><div class="kpi-data"><span class="kpi-value" id="sys-d-scanned">0</span><span class="kpi-perc" style="color:var(--primary-blue);" id="sys-d-scanned-p">0.00%</span></div></div>
+                                <div class="kpi-row"><span class="kpi-label">Not Scanned</span><div class="kpi-data"><span class="kpi-value" id="sys-d-notscanned">0</span><span class="kpi-perc" style="color:var(--primary-red);" id="sys-d-notscanned-p">0.00%</span></div></div>
+                            </div>
+                            <div class="kpi-card">
+                                <div class="kpi-title">Weekly Details</div>
+                                <div class="kpi-row"><span class="kpi-label">Total Batch</span><div class="kpi-data"><span class="kpi-value" id="sys-w-batch">0</span><span class="kpi-perc"></span></div></div>
+                                <div class="kpi-row"><span class="kpi-label">Scanned</span><div class="kpi-data"><span class="kpi-value" id="sys-w-scanned">0</span><span class="kpi-perc" style="color:var(--primary-blue);" id="sys-w-scanned-p">0.00%</span></div></div>
+                                <div class="kpi-row"><span class="kpi-label">Not Scanned</span><div class="kpi-data"><span class="kpi-value" id="sys-w-notscanned">0</span><span class="kpi-perc" style="color:var(--primary-red);" id="sys-w-notscanned-p">0.00%</span></div></div>
+                            </div>
+                        </div>
+                        <div class="chart-card">
+                            <div class="chart-title" id="chartSysTitle">Daily System vs Scanned Actual</div>
+                            <div class="svg-donut-container">
+                                <svg width="100%" height="100%" viewBox="0 0 100 100">
+                                    <circle cx="50" cy="50" r="42" fill="transparent" stroke="var(--primary-red)" stroke-width="10" opacity="0.3"/>
+                                    <circle id="donutSysCircle" cx="50" cy="50" r="42" fill="transparent" stroke="var(--primary-green)" stroke-width="10" stroke-dasharray="263.89" stroke-dashoffset="263.89" transform="rotate(-90 50 50)" style="transition: stroke-dashoffset 0.6s ease;"/>
+                                </svg>
+                                <div class="svg-donut-text" id="donutSysText">0%</div>
+                            </div>
+                        </div>
+                        <div class="chart-card" style="align-items:stretch;">
+                            <div class="chart-title">Weekly System vs Scanned Trend vs Volume</div>
+                            <div id="trendSysContainer" class="svg-trend-wrapper"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Auditor Matrix -->
+                <div class="dashboard-section">
+                    <div class="section-title">User Operational Performance Matrix</div>
+                    <div class="table-card" style="padding:0; overflow:hidden;">
+                        <div class="table-scroller" style="max-height:380px;">
+                            <table class="data-table" style="width:100%; table-layout:fixed;">
+                                <colgroup>
+                                    <col style="width:95px;"><col style="width:75px;"><col style="width:65px;"><col style="width:75px;">
+                                    <col style="width:75px;"><col style="width:85px;"><col style="width:80px;">
+                                    <col style="width:85px;"><col style="width:85px;"><col style="width:85px;"><col style="width:85px;">
+                                    <col style="width:85px;"><col style="width:120px;"><col style="width:110px;"><col style="width:80px;">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th rowspan="2" style="vertical-align:middle; border-right:1px solid var(--border-color); position:sticky; left:0; z-index:11; background:var(--bg-color);">User</th>
+                                        <th colspan="6" id="auditorDailyHeader" style="background:rgba(0,102,204,0.05); text-align:center; border-right:2px solid var(--border-color);">Daily Shift Performance</th>
+                                        <th colspan="8" style="background:rgba(52,199,89,0.05); text-align:center;">Weekly Tracking</th>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-right" style="background:rgba(0,102,204,0.02);">Scans</th>
+                                        <th class="text-right" style="background:rgba(0,102,204,0.02);">Dups</th>
+                                        <th class="text-right" style="background:rgba(0,102,204,0.02);">Mismatch</th>
+                                        <th class="text-right" style="background:rgba(0,102,204,0.02);">Missed</th>
+                                        <th class="text-center" style="background:rgba(0,102,204,0.02);">Duration</th>
+                                        <th class="text-right" style="background:rgba(0,102,204,0.02); border-right:2px solid var(--border-color);">Acc %</th>
+                                        <th class="text-right" style="background:rgba(52,199,89,0.01);">Scans</th>
+                                        <th class="text-right" style="background:rgba(52,199,89,0.01);">Dups</th>
+                                        <th class="text-right" style="background:rgba(52,199,89,0.01);">Mismatch</th>
+                                        <th class="text-right" style="background:rgba(52,199,89,0.01);">Missed</th>
+                                        <th class="text-right" style="background:rgba(52,199,89,0.02); color:var(--primary-orange);">Excluded</th>
+                                        <th class="text-center" style="background:rgba(52,199,89,0.01);">Accum. Dur.</th>
+                                        <th class="text-center" style="background:rgba(52,199,89,0.01);">Avg Dur.</th>
+                                        <th class="text-right" style="background:rgba(52,199,89,0.02);">Acc %</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="auditorGridBody">
+                                    <tr><td colspan="15" class="empty-state">Awaiting pipeline execution…</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: Discrepancy Logs -->
+            <div id="tab-details" class="tab-content">
+                <div class="dashboard-section">
+                    <div class="section-title">Discrepancy Investigation Tables</div>
+                    <div class="table-card" id="cardMasterInvestigation">
+                        <div class="table-header-row">
+                            <div style="font-size:13px; font-weight:bold;">Unified Reconciliation Log</div>
+                            <div>
+                                <button class="filter-btn" style="background:var(--primary-green); color:white; border:none; margin-right:8px;" onclick="exportToCSV()">📥 Export CSV</button>
+                                <button class="expand-btn" onclick="toggleRowDrillFullscreen('cardMasterInvestigation', this)">⛶ Expand Viewport</button>
+                            </div>
+                        </div>
+                        <div class="table-toolbar">
+                            <div style="display:flex; align-items:center; gap:12px;">
+                                <div class="filter-group" id="scopeAreaControls" style="padding-right:12px; border-right:2px solid var(--border-color);">
+                                    <button id="btnScopeCURRENT" class="filter-btn active" onclick="setGridDataScope('CURRENT')">Current Shift</button>
+                                    <button id="btnScopeALL" class="filter-btn" onclick="setGridDataScope('ALL')">Overall (Week)</button>
+                                </div>
+                                <div class="filter-group" id="filterAreaControls">
+                                    <button class="filter-btn active" onclick="setGridDataFilter('ALL')">All Records</button>
+                                    <button class="filter-btn" style="border-left:3px solid var(--primary-red); color:var(--primary-red);" onclick="setGridDataFilter('ERRORS')">Errors Only</button>
+                                    <button class="filter-btn" onclick="setGridDataFilter('PLACEMENT_MISMATCH')">Bin Mismatches</button>
+                                    <button class="filter-btn" onclick="setGridDataFilter('NOT_SCANNED')">Not Scanned</button>
+                                    <button class="filter-btn" onclick="setGridDataFilter('ISSUED')">Issued</button>
+                                </div>
+                            </div>
+                            <div style="display:flex; gap:6px;">
+                                <button class="filter-btn" onclick="toggleGlobalRowCollapse()">Expand All</button>
+                                <input type="text" id="tableGridSearch" placeholder="Search…" style="padding:5px 10px; border:1px solid var(--border-color); border-radius:6px; font-size:12px; background:var(--surface-color); color:var(--text-color); width:140px;" oninput="renderMasterPipelineGrid()">
+                            </div>
+                        </div>
+                        <div class="table-scroller">
+                            <table class="data-table" id="reconciliationLogTable" style="table-layout:fixed; width:100%;">
+                                <colgroup>
+                                    <col style="width:28px;"><col style="width:105px;"><col style="width:105px;">
+                                    <col style="width:115px;"><col style="width:125px;"><col style="width:85px;">
+                                    <col style="width:115px;"><col style="width:105px;"><col style="width:60px;">
+                                    <col style="width:60px;"><col style="width:70px;"><col style="width:90px;">
+                                    <col style="width:65px;"><col style="width:145px;">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th></th><th>Scan Bin</th><th>System Bin</th><th>Product</th>
+                                        <th>Description</th><th>Batch</th><th>User</th><th>Time</th>
+                                        <th class="text-right">Count</th><th class="text-right">EWM</th>
+                                        <th class="text-right">Var</th><th>Status</th>
+                                        <th class="text-center" title="Shift+Click to multi-select">Excl. KPI</th>
+                                        <th>Remarks</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="masterPipelineGridBody">
+                                    <tr><td colspan="14" class="empty-state">No data processed yet.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="js/renderer.js"></script>
+</body>
+</html>

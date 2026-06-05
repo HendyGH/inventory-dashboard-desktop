@@ -1,0 +1,31 @@
+{
+  "name": "inventory-dashboard-desktop",
+  "version": "1.0.0",
+  "description": "Offline Inventory Reconciliation & Operational Dashboard — Desktop (.exe)",
+  "main": "main.js",
+  "author": "chenh",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "dist-portable": "electron-builder --win portable",
+    "dist-dir": "electron-builder --win dir",
+    "dist-all": "electron-builder --win portable dir"
+  },
+  "devDependencies": {
+    "electron": "31.7.7",
+    "electron-builder": "24.13.3"
+  },
+  "build": {
+    "appId": "com.chenh.inventorydashboard",
+    "productName": "Inventory Dashboard",
+    "directories": { "output": "dist", "buildResources": "build" },
+    "files": ["main.js", "preload.js", "app/**/*", "package.json"],
+    "win": {
+      "target": ["portable", "dir"],
+      "icon": "build/icon.ico"
+    },
+    "portable": {
+      "artifactName": "InventoryDashboard-${version}-portable.exe"
+    }
+  }
+}

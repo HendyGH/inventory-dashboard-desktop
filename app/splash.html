@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  width: 420px; height: 320px;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #0f172a 100%);
+  border-radius: 16px; overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #f1f5f9; user-select: none;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.container { text-align: center; }
+.icon {
+  width: 64px; height: 64px; margin: 0 auto 20px;
+  background: linear-gradient(135deg, #3b82f6, #06b6d4);
+  border-radius: 14px; display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 8px 32px rgba(59,130,246,0.3);
+}
+.icon svg { width: 36px; height: 36px; fill: white; }
+h1 { font-size: 20px; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 6px; }
+p { font-size: 12px; color: #94a3b8; margin-bottom: 28px; }
+.spinner {
+  width: 28px; height: 28px; margin: 0 auto;
+  border: 3px solid rgba(255,255,255,0.1);
+  border-top-color: #3b82f6;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+.ver { margin-top: 24px; font-size: 11px; color: #475569; }
+@keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="icon">
+    <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v3c0 .7.4 1.4 1 1.7V20c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V8.7c.6-.3 1-1 1-1.7V4c0-1.1-.9-2-2-2zm-1 18H5V9h14v11zm1-13H4V4h16v3zM9 12h6v2H9v-2z"/></svg>
+  </div>
+  <h1>Inventory Dashboard</h1>
+  <p>EWM Reconciliation Engine</p>
+  <div class="spinner"></div>
+  <div class="ver">v1.0.0</div>
+</div>
+</body>
+</html>

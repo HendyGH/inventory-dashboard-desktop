@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e3a8a"/>
+      <stop offset="100%" style="stop-color:#0f172a"/>
+    </linearGradient>
+    <linearGradient id="box" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6"/>
+      <stop offset="100%" style="stop-color:#06b6d4"/>
+    </linearGradient>
+  </defs>
+  <rect width="256" height="256" rx="48" fill="url(#bg)"/>
+  <g transform="translate(48, 40)">
+    <!-- Box body -->
+    <rect x="10" y="50" width="140" height="110" rx="8" fill="url(#box)" opacity="0.9"/>
+    <!-- Box lid -->
+    <rect x="0" y="30" width="160" height="30" rx="6" fill="url(#box)"/>
+    <!-- Box stripe -->
+    <rect x="60" y="30" width="40" height="130" fill="rgba(255,255,255,0.2)" rx="4"/>
+    <!-- Checkmark -->
+    <circle cx="120" cy="130" r="28" fill="rgba(255,255,255,0.15)"/>
+    <polyline points="105,130 115,142 138,118" fill="none" stroke="white" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>
